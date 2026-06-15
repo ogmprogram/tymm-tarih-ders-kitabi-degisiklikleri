@@ -6,6 +6,18 @@ const slides = Array.from({ length: TOTAL_SLIDES }, (_, index) => ({
   image: `assets/slides/slide-${String(index + 1).padStart(2, "0")}.png`,
 }));
 
+const sectionRanges = [
+  { start: 1, end: 2 },
+  { start: 3, end: 4 },
+  { start: 5, end: 5 },
+  { start: 6, end: 7 },
+  { start: 8, end: 11 },
+  { start: 12, end: 17 },
+  { start: 18, end: 21 },
+  { start: 22, end: 34 },
+  { start: 35, end: 36 },
+];
+
 const commonHomeZone = {
   kind: "home",
   label: "İçindekilere dön",
@@ -166,6 +178,25 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function getSectionRange(slideNumber) {
+  return sectionRanges.find(
+    (section) => slideNumber >= section.start && slideNumber <= section.end
+  );
+}
+
+function canStepFrom(slideNumber, direction) {
+  const section = getSectionRange(slideNumber);
+  if (!section) return false;
+
+  const nextSlide = slideNumber + direction;
+  return nextSlide >= section.start && nextSlide <= section.end;
+}
+
+function stepSlide(direction) {
+  if (!canStepFrom(currentSlide, direction)) return;
+  goToSlide(currentSlide + direction);
+}
+
 function goToSlide(slideNumber, options = {}) {
   const nextSlide = clamp(slideNumber, 1, TOTAL_SLIDES);
   if (isFlipping || (nextSlide === currentSlide && slideImage.src)) return;
@@ -199,8 +230,8 @@ function render(options = {}) {
   slideImage.src = slide.image;
   slideImage.alt = `Slayt ${slide.number}`;
   slideCounter.textContent = `${slide.number} / ${TOTAL_SLIDES}`;
-  prevBtn.disabled = slide.number === 1;
-  nextBtn.disabled = slide.number === TOTAL_SLIDES;
+  prevBtn.disabled = !canStepFrom(slide.number, -1);
+  nextBtn.disabled = !canStepFrom(slide.number, 1);
   history.replaceState(null, "", `#slide-${String(slide.number).padStart(2, "0")}`);
   renderHotspots(slide.number);
   preload(slide.number + 1);
@@ -272,19 +303,19 @@ function toggleFullscreen() {
   }
 }
 
-prevBtn.addEventListener("click", () => goToSlide(currentSlide - 1));
-nextBtn.addEventListener("click", () => goToSlide(currentSlide + 1));
+prevBtn.addEventListener("click", () => stepSlide(-1));
+nextBtn.addEventListener("click", () => stepSlide(1));
 homeBtn.addEventListener("click", () => goToSlide(HOME_SLIDE));
 fullscreenBtn.addEventListener("click", toggleFullscreen);
 
 window.addEventListener("keydown", (event) => {
   if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
     event.preventDefault();
-    goToSlide(currentSlide + 1);
+    stepSlide(1);
   }
   if (event.key === "ArrowLeft" || event.key === "PageUp") {
     event.preventDefault();
-    goToSlide(currentSlide - 1);
+    stepSlide(-1);
   }
   if (event.key === "Home") {
     event.preventDefault();
@@ -322,13 +353,13 @@ stage.addEventListener("pointerup", (event) => {
   if (Math.abs(deltaY) > Math.abs(deltaX) * 1.25) return;
 
   if (Math.abs(deltaX) >= 46) {
-    goToSlide(currentSlide + (deltaX < 0 ? 1 : -1));
+    stepSlide(deltaX < 0 ? 1 : -1);
     return;
   }
 
   if (elapsed < 420) {
     const clickedRightHalf = event.clientX > stageRect.left + stageRect.width / 2;
-    goToSlide(currentSlide + (clickedRightHalf ? 1 : -1));
+    stepSlide(clickedRightHalf ? 1 : -1);
   }
 });
 
