@@ -13,6 +13,7 @@
 html,
 body {
   height: 100%;
+  min-height: 100%;
 }
 
 body {
@@ -32,9 +33,11 @@ button {
 .presentation-shell {
   position: relative;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
+  min-height: 100svh;
   padding: clamp(8px, 1.8vh, 18px) clamp(8px, 1.8vw, 22px);
   gap: clamp(8px, 1.4vh, 14px);
 }
@@ -44,6 +47,7 @@ button {
   align-self: center;
   justify-self: center;
   width: min(calc(100vw - 24px), calc((100vh - 86px) * 16 / 9));
+  width: min(calc(100vw - 24px), calc((100dvh - 86px) * 16 / 9));
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: #fff;
@@ -353,30 +357,31 @@ button {
 
 @media (max-width: 720px) {
   .presentation-shell {
-    padding: 6px;
-    gap: 6px;
+    grid-template-rows: minmax(0, 1fr);
+    padding: 6px 6px calc(68px + env(safe-area-inset-bottom, 0px));
+    gap: 0;
   }
 
   .slide-stage {
-    width: min(calc(100vw - 12px), calc((100vh - 74px) * 16 / 9));
+    width: min(calc(100vw - 12px), calc((100dvh - 82px - env(safe-area-inset-bottom, 0px)) * 16 / 9));
     border-radius: 6px;
   }
 
   .control-bar {
-    grid-template-columns: 38px 38px minmax(58px, auto) 38px 38px;
-    min-height: 48px;
-    gap: 6px;
-  }
-
-  .icon-button {
-    width: 38px;
-    height: 38px;
+    position: fixed;
+    left: 50%;
+    bottom: max(10px, env(safe-area-inset-bottom, 0px));
+    z-index: 30;
+    grid-template-columns: 42px 42px minmax(72px, auto) 42px 42px;
+    min-height: 52px;
+    gap: 8px;
+    transform: translateX(-50%);
   }
 
   .slide-counter {
-    min-width: 58px;
-    padding: 0 7px;
-    font-size: 12px;
-    line-height: 38px;
+    min-width: 72px;
+    padding: 0 10px;
+    font-size: 14px;
+    line-height: 42px;
   }
 }
