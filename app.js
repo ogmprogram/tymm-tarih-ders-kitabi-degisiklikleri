@@ -145,9 +145,15 @@ const nextBtn = document.querySelector("#nextBtn");
 const homeBtn = document.querySelector("#homeBtn");
 const fullscreenBtn = document.querySelector("#fullscreenBtn");
 const slideCounter = document.querySelector("#slideCounter");
+const flipLayer = document.querySelector("#flipLayer");
+const flipBack = document.querySelector("#flipBack");
+const flipFront = document.querySelector("#flipFront");
+const flipPage = document.querySelector("#flipPage");
 
 let currentSlide = getInitialSlide();
-let touchStartX = null;
+let pointerStart = null;
+let isFlipping = false;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function getInitialSlide() {
   const match = window.location.hash.match(/slide-(\d+)/);
@@ -160,19 +166,35 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-function goToSlide(slideNumber) {
+function goToSlide(slideNumber, options = {}) {
   const nextSlide = clamp(slideNumber, 1, TOTAL_SLIDES);
-  if (nextSlide === currentSlide && slideImage.src) return;
+  if (isFlipping || (nextSlide === currentSlide && slideImage.src)) return;
+
+  const previousSlide = currentSlide;
+  const shouldFlip =
+    options.flip !== false &&
+    slideImage.getAttribute("src") &&
+    Math.abs(nextSlide - previousSlide) === 1 &&
+    !prefersReducedMotion.matches;
+
+  if (shouldFlip) {
+    flipToSlide(previousSlide, nextSlide);
+    return;
+  }
 
   currentSlide = nextSlide;
   render();
 }
 
-function render() {
+function render(options = {}) {
   const slide = slides[currentSlide - 1];
-  stage.classList.remove("is-transitioning");
-  void stage.offsetWidth;
-  stage.classList.add("is-transitioning");
+  if (options.basicTransition !== false) {
+    stage.classList.remove("is-transitioning");
+    void stage.offsetWidth;
+    stage.classList.add("is-transitioning");
+  } else {
+    stage.classList.remove("is-transitioning");
+  }
 
   slideImage.src = slide.image;
   slideImage.alt = `Slayt ${slide.number}`;
@@ -183,6 +205,30 @@ function render() {
   renderHotspots(slide.number);
   preload(slide.number + 1);
   preload(slide.number - 1);
+}
+
+function flipToSlide(previousSlide, nextSlide) {
+  isFlipping = true;
+  const direction = nextSlide > previousSlide ? "next" : "prev";
+
+  flipFront.src = slides[previousSlide - 1].image;
+  flipBack.src = slides[nextSlide - 1].image;
+  flipLayer.className = `flip-layer is-active flip-${direction}`;
+
+  currentSlide = nextSlide;
+  render({ basicTransition: false });
+
+  const finish = () => {
+    flipLayer.className = "flip-layer";
+    flipFront.removeAttribute("src");
+    flipBack.removeAttribute("src");
+    isFlipping = false;
+  };
+
+  flipPage.addEventListener("animationend", finish, { once: true });
+  window.setTimeout(() => {
+    if (isFlipping) finish();
+  }, 900);
 }
 
 function renderHotspots(slideNumber) {
@@ -250,17 +296,44 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-stage.addEventListener("touchstart", (event) => {
-  touchStartX = event.changedTouches[0].clientX;
+stage.addEventListener("pointerdown", (event) => {
+  if (event.target.closest(".hotspot")) return;
+
+  pointerStart = {
+    x: event.clientX,
+    y: event.clientY,
+    time: Date.now(),
+  };
+  stage.setPointerCapture?.(event.pointerId);
 });
 
-stage.addEventListener("touchend", (event) => {
-  if (touchStartX === null) return;
+stage.addEventListener("pointerup", (event) => {
+  if (!pointerStart || event.target.closest(".hotspot")) {
+    pointerStart = null;
+    return;
+  }
 
-  const delta = event.changedTouches[0].clientX - touchStartX;
-  touchStartX = null;
-  if (Math.abs(delta) < 48) return;
-  goToSlide(currentSlide + (delta < 0 ? 1 : -1));
+  const deltaX = event.clientX - pointerStart.x;
+  const deltaY = event.clientY - pointerStart.y;
+  const elapsed = Date.now() - pointerStart.time;
+  const stageRect = stage.getBoundingClientRect();
+  pointerStart = null;
+
+  if (Math.abs(deltaY) > Math.abs(deltaX) * 1.25) return;
+
+  if (Math.abs(deltaX) >= 46) {
+    goToSlide(currentSlide + (deltaX < 0 ? 1 : -1));
+    return;
+  }
+
+  if (elapsed < 420) {
+    const clickedRightHalf = event.clientX > stageRect.left + stageRect.width / 2;
+    goToSlide(currentSlide + (clickedRightHalf ? 1 : -1));
+  }
+});
+
+stage.addEventListener("pointercancel", () => {
+  pointerStart = null;
 });
 
 window.addEventListener("hashchange", () => {
