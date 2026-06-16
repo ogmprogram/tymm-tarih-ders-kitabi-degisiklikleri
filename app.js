@@ -22,11 +22,13 @@ const contentsJumpButtons = [
   {
     label:
       "TYMM 2024 PROGRAMINA G\u00d6RE YAZILAN TAR\u0130H K\u0130TABINDAN \u00d6RNEKLER",
+    shortLabel: "TYMM 2024 TAR\u0130H K\u0130TABI \u00d6RNEKLER\u0130",
     target: 18,
   },
   {
     label:
       "TYMM 2024 PROGRAMINA G\u00d6RE YAZILAN 11. SINIF TAR\u0130H K\u0130TABININ \u00d6ZELL\u0130KLER\u0130",
+    shortLabel: "11. SINIF TAR\u0130H K\u0130TABI \u00d6ZELL\u0130KLER\u0130",
     target: 34,
   },
 ];
@@ -319,6 +321,7 @@ function renderContentsJumpButtons(slideNumber) {
     button.type = "button";
     button.className = "toc-jump-button";
     button.textContent = jumpButton.label;
+    button.dataset.shortLabel = jumpButton.shortLabel;
     button.title = jumpButton.label;
     button.style.setProperty("--toc-delay", `${180 + index * 140}ms`);
     button.addEventListener("click", (event) => {
