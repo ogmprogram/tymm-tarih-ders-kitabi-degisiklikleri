@@ -142,6 +142,60 @@ button {
     0 0 22px rgba(233, 28, 43, 0.45);
 }
 
+.toc-buttons {
+  position: absolute;
+  z-index: 3;
+  left: 13.3%;
+  right: auto;
+  bottom: 1.25%;
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 8.2%;
+  width: 73.4%;
+  pointer-events: auto;
+}
+
+.toc-buttons.is-visible {
+  display: grid;
+}
+
+.toc-jump-button {
+  min-height: 5.2%;
+  height: clamp(34px, 4vw, 48px);
+  padding: 6px 12px;
+  color: #fff;
+  text-align: center;
+  font-size: clamp(10px, 0.74vw, 14px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: 0;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(233, 28, 43, 0.96), rgba(19, 41, 66, 0.94)),
+    var(--chrome);
+  box-shadow:
+    0 12px 26px rgba(10, 22, 36, 0.24),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+}
+
+.toc-jump-button:hover,
+.toc-jump-button:focus-visible {
+  background:
+    linear-gradient(135deg, rgba(197, 19, 32, 0.98), rgba(11, 54, 92, 0.96)),
+    #c51320;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.toc-buttons.is-animated .toc-jump-button {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: toc-button-enter 620ms cubic-bezier(0.18, 0.78, 0.22, 1) forwards;
+  animation-delay: var(--toc-delay, 0ms);
+}
+
 .flip-layer {
   position: absolute;
   inset: 0;
@@ -343,8 +397,20 @@ button {
   }
 }
 
+@keyframes toc-button-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .is-transitioning .slide-image,
+  .toc-buttons.is-animated .toc-jump-button,
   .flip-layer.flip-next .flip-page,
   .flip-layer.flip-prev .flip-page,
   .flip-layer.flip-next .flip-page::after,
@@ -352,6 +418,8 @@ button {
   .hotspot:hover::after,
   .hotspot:focus-visible::after {
     animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -365,6 +433,22 @@ button {
   .slide-stage {
     width: min(calc(100vw - 12px), calc((100dvh - 82px - env(safe-area-inset-bottom, 0px)) * 16 / 9));
     border-radius: 6px;
+  }
+
+  .toc-buttons {
+    left: 13.3%;
+    bottom: 1.25%;
+    grid-template-columns: 1fr 1fr;
+    gap: 8.2%;
+    width: 73.4%;
+  }
+
+  .toc-jump-button {
+    height: 42px;
+    min-height: 42px;
+    padding: 4px 6px;
+    font-size: clamp(6px, 1.62vw, 10px);
+    line-height: 1.04;
   }
 
   .control-bar {

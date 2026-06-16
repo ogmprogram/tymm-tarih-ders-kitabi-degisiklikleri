@@ -13,9 +13,22 @@ const sectionRanges = [
   { start: 6, end: 7 },
   { start: 8, end: 11 },
   { start: 12, end: 17 },
-  { start: 18, end: 21 },
-  { start: 22, end: 34 },
+  { start: 18, end: 33 },
+  { start: 34, end: 34 },
   { start: 35, end: 36 },
+];
+
+const contentsJumpButtons = [
+  {
+    label:
+      "TYMM 2024 PROGRAMINA G\u00d6RE YAZILAN TAR\u0130H K\u0130TABINDAN \u00d6RNEKLER",
+    target: 18,
+  },
+  {
+    label:
+      "TYMM 2024 PROGRAMINA G\u00d6RE YAZILAN 11. SINIF TAR\u0130H K\u0130TABININ \u00d6ZELL\u0130KLER\u0130",
+    target: 34,
+  },
 ];
 
 const commonHomeZone = {
@@ -151,6 +164,7 @@ const hotspotsBySlide = {
 
 const slideImage = document.querySelector("#slideImage");
 const hotspotsRoot = document.querySelector("#hotspots");
+const tocButtonsRoot = document.querySelector("#tocButtons");
 const stage = document.querySelector("#stage");
 const prevBtn = document.querySelector("#prevBtn");
 const nextBtn = document.querySelector("#nextBtn");
@@ -165,6 +179,7 @@ const flipPage = document.querySelector("#flipPage");
 let currentSlide = getInitialSlide();
 let pointerStart = null;
 let isFlipping = false;
+let hasAnimatedContentsButtons = false;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function getInitialSlide() {
@@ -234,6 +249,7 @@ function render(options = {}) {
   nextBtn.disabled = !canStepFrom(slide.number, 1);
   history.replaceState(null, "", `#slide-${String(slide.number).padStart(2, "0")}`);
   renderHotspots(slide.number);
+  renderContentsJumpButtons(slide.number);
   preload(slide.number + 1);
   preload(slide.number - 1);
 }
@@ -288,6 +304,33 @@ function renderHotspots(slideNumber) {
   }
 }
 
+function renderContentsJumpButtons(slideNumber) {
+  tocButtonsRoot.replaceChildren();
+  tocButtonsRoot.className = "toc-buttons";
+
+  if (slideNumber !== HOME_SLIDE) return;
+
+  const shouldAnimate = !hasAnimatedContentsButtons && !prefersReducedMotion.matches;
+  tocButtonsRoot.classList.add("is-visible");
+  if (shouldAnimate) tocButtonsRoot.classList.add("is-animated");
+
+  contentsJumpButtons.forEach((jumpButton, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "toc-jump-button";
+    button.textContent = jumpButton.label;
+    button.title = jumpButton.label;
+    button.style.setProperty("--toc-delay", `${180 + index * 140}ms`);
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      goToSlide(jumpButton.target, { flip: false });
+    });
+    tocButtonsRoot.append(button);
+  });
+
+  hasAnimatedContentsButtons = true;
+}
+
 function preload(slideNumber) {
   if (slideNumber < 1 || slideNumber > TOTAL_SLIDES) return;
 
@@ -328,7 +371,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 stage.addEventListener("pointerdown", (event) => {
-  if (event.target.closest(".hotspot")) return;
+  if (event.target.closest(".hotspot, .toc-jump-button")) return;
 
   pointerStart = {
     x: event.clientX,
@@ -339,7 +382,7 @@ stage.addEventListener("pointerdown", (event) => {
 });
 
 stage.addEventListener("pointerup", (event) => {
-  if (!pointerStart || event.target.closest(".hotspot")) {
+  if (!pointerStart || event.target.closest(".hotspot, .toc-jump-button")) {
     pointerStart = null;
     return;
   }
