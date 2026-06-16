@@ -13,23 +13,23 @@ const sectionRanges = [
   { start: 6, end: 7 },
   { start: 8, end: 11 },
   { start: 12, end: 17 },
-  { start: 18, end: 33 },
-  { start: 34, end: 34 },
+  { start: 18, end: 21 },
+  { start: 22, end: 34 },
   { start: 35, end: 36 },
 ];
 
 const contentsJumpButtons = [
   {
     label:
-      "TYMM 2024 PROGRAMINA G\u00d6RE YAZILAN TAR\u0130H K\u0130TABINDAN \u00d6RNEKLER",
-    shortLabel: "TYMM 2024 TAR\u0130H K\u0130TABI \u00d6RNEKLER\u0130",
+      "2018 PROGRAMINA G\u00d6RE YAZILAN TAR\u0130H K\u0130TABINDAN \u00d6RNEKLER",
+    shortLabel: "2018 TAR\u0130H K\u0130TABI \u00d6RNEKLER\u0130",
     target: 18,
   },
   {
     label:
-      "TYMM 2024 PROGRAMINA G\u00d6RE YAZILAN 11. SINIF TAR\u0130H K\u0130TABININ \u00d6ZELL\u0130KLER\u0130",
-    shortLabel: "11. SINIF TAR\u0130H K\u0130TABI \u00d6ZELL\u0130KLER\u0130",
-    target: 34,
+      "TYMM 2024 PROGRAMINA G\u00d6RE YAZILAN TAR\u0130H K\u0130TABINDAN \u00d6RNEKLER",
+    shortLabel: "TYMM 2024 TAR\u0130H K\u0130TABI \u00d6RNEKLER\u0130",
+    target: 22,
   },
 ];
 
