@@ -1,9 +1,10 @@
 :root {
-  --chrome: #e91c2b;
-  --ink: #132942;
-  --gold: #d6b15b;
-  --paper: #f5f8fb;
-  --shadow: 0 18px 48px rgba(10, 22, 36, 0.2);
+  --chrome: #e61d2b;
+  --chrome-dark: #b81421;
+  --ink: #17324f;
+  --paper: #f6f9fb;
+  --gold: #d2aa4f;
+  --shadow: 0 18px 48px rgba(12, 28, 44, 0.18);
 }
 
 * {
@@ -22,8 +23,8 @@ body {
   color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
   background:
-    radial-gradient(circle at 12% 18%, rgba(233, 28, 43, 0.13), transparent 26%),
-    linear-gradient(135deg, #eef4f7 0%, #fbfcfd 42%, #e8f2f3 100%);
+    linear-gradient(180deg, rgba(230, 29, 43, 0.08), transparent 28%),
+    linear-gradient(135deg, #eef4f8 0%, #fbfcfd 46%, #e9f2f1 100%);
 }
 
 button {
@@ -81,7 +82,7 @@ button {
   position: absolute;
   padding: 0;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--hotspot-radius, 8px);
   background: transparent;
   cursor: pointer;
   outline: none;
@@ -91,31 +92,29 @@ button {
 .hotspot::after {
   content: "";
   position: absolute;
-  inset: -4px;
+  inset: var(--hotspot-inset, -2px);
   border-radius: inherit;
   opacity: 0;
   pointer-events: none;
   transition:
-    opacity 180ms ease,
-    transform 180ms ease;
+    opacity 170ms ease,
+    transform 170ms ease,
+    box-shadow 170ms ease;
 }
 
 .hotspot::before {
-  background:
-    linear-gradient(135deg, rgba(233, 28, 43, 0.14), rgba(214, 177, 91, 0.13)),
-    rgba(255, 255, 255, 0.08);
-  border: 2px solid rgba(233, 28, 43, 0.78);
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(230, 29, 43, 0.72);
   box-shadow:
-    0 0 0 3px rgba(255, 255, 255, 0.55),
-    0 0 24px rgba(233, 28, 43, 0.35),
-    inset 0 0 18px rgba(255, 255, 255, 0.45);
-  transform: scale(0.985);
+    0 0 0 2px rgba(255, 255, 255, 0.5),
+    0 0 18px rgba(230, 29, 43, 0.28);
+  transform: scale(0.992);
 }
 
 .hotspot::after {
-  inset: 18%;
-  border: 1px solid rgba(214, 177, 91, 0.9);
-  transform: scale(0.58);
+  inset: 14%;
+  border: 1px solid rgba(210, 170, 79, 0.88);
+  transform: scale(0.7);
 }
 
 .hotspot:hover::before,
@@ -132,68 +131,34 @@ button {
 }
 
 .hotspot.home-zone {
-  border-radius: 999px;
+  --hotspot-radius: 999px;
+  --hotspot-inset: -1px;
 }
 
 .hotspot.home-zone::before {
+  background: rgba(255, 255, 255, 0.16);
   border-color: rgba(255, 255, 255, 0.95);
   box-shadow:
-    0 0 0 2px rgba(233, 28, 43, 0.7),
-    0 0 22px rgba(233, 28, 43, 0.45);
+    0 0 0 2px rgba(230, 29, 43, 0.66),
+    0 0 18px rgba(230, 29, 43, 0.34);
 }
 
-.toc-buttons {
-  position: absolute;
-  z-index: 3;
-  left: 13.3%;
-  right: auto;
-  bottom: 3.0%;
-  display: none;
-  grid-template-columns: 1fr 1fr;
-  gap: 8.2%;
-  width: 73.4%;
-  pointer-events: auto;
+.hotspot.toc-zone,
+.hotspot.topic-zone {
+  --hotspot-inset: -1px;
 }
 
-.toc-buttons.is-visible {
-  display: grid;
+.hotspot.integrated-button {
+  --hotspot-radius: 6px;
+  --hotspot-inset: 0;
 }
 
-.toc-jump-button {
-  min-height: 5.2%;
-  height: clamp(46px, 3.1vw, 62px);
-  padding: 8px 16px;
-  color: #fff;
-  text-align: center;
-  font-size: clamp(13px, 0.92vw, 18px);
-  font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: 0;
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  border-radius: 8px;
-  background:
-    linear-gradient(135deg, rgba(233, 28, 43, 0.96), rgba(19, 41, 66, 0.94)),
-    var(--chrome);
+.hotspot.integrated-button::before {
+  background: linear-gradient(135deg, rgba(230, 29, 43, 0.1), rgba(23, 50, 79, 0.08));
+  border-color: rgba(23, 50, 79, 0.46);
   box-shadow:
-    0 12px 26px rgba(10, 22, 36, 0.24),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-  cursor: pointer;
-}
-
-.toc-jump-button:hover,
-.toc-jump-button:focus-visible {
-  background:
-    linear-gradient(135deg, rgba(197, 19, 32, 0.98), rgba(11, 54, 92, 0.96)),
-    #c51320;
-  outline: none;
-  transform: translateY(-1px);
-}
-
-.toc-buttons.is-animated .toc-jump-button {
-  opacity: 0;
-  transform: translateY(18px);
-  animation: toc-button-enter 620ms cubic-bezier(0.18, 0.78, 0.22, 1) forwards;
-  animation-delay: var(--toc-delay, 0ms);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.36),
+    0 8px 18px rgba(12, 28, 44, 0.16);
 }
 
 .flip-layer {
@@ -273,10 +238,10 @@ button {
   gap: 8px;
   min-height: 52px;
   padding: 5px;
-  border: 1px solid rgba(19, 41, 66, 0.12);
+  border: 1px solid rgba(23, 50, 79, 0.12);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 10px 28px rgba(10, 22, 36, 0.13);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 10px 28px rgba(12, 28, 44, 0.13);
   backdrop-filter: blur(10px);
 }
 
@@ -299,13 +264,13 @@ button {
 
 .icon-button:hover,
 .icon-button:focus-visible {
-  background: #c51320;
+  background: var(--chrome-dark);
   transform: translateY(-1px);
 }
 
 .icon-button:disabled {
   cursor: default;
-  opacity: 0.45;
+  opacity: 0.42;
   transform: none;
 }
 
@@ -387,30 +352,18 @@ button {
 
 @keyframes hotspot-pulse {
   0% {
-    opacity: 0.9;
-    transform: scale(0.72);
+    opacity: 0.82;
+    transform: scale(0.76);
   }
   72%,
   100% {
     opacity: 0;
-    transform: scale(1.35);
-  }
-}
-
-@keyframes toc-button-enter {
-  0% {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+    transform: scale(1.28);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .is-transitioning .slide-image,
-  .toc-buttons.is-animated .toc-jump-button,
   .flip-layer.flip-next .flip-page,
   .flip-layer.flip-prev .flip-page,
   .flip-layer.flip-next .flip-page::after,
@@ -433,43 +386,13 @@ button {
   .slide-stage {
     width: min(calc(100vw - 12px), calc((100dvh - 82px - env(safe-area-inset-bottom, 0px)) * 16 / 9));
     border-radius: 6px;
-    overflow: visible;
   }
 
-  .toc-buttons {
-    left: 5%;
-    bottom: -36px;
-    grid-template-columns: 1fr 1fr;
-    gap: 3%;
-    width: 90%;
-  }
-
-  .toc-jump-button {
-    position: relative;
-    height: 30px;
-    min-height: 30px;
-    padding: 2px 7px;
-    overflow: hidden;
-    color: transparent;
-    font-size: 0;
-    border-radius: 6px;
+  .hotspot::before {
+    border-width: 1.5px;
     box-shadow:
-      0 5px 12px rgba(10, 22, 36, 0.16),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-  }
-
-  .toc-jump-button::after {
-    content: attr(data-short-label);
-    position: absolute;
-    inset: 2px 6px;
-    display: grid;
-    place-items: center;
-    color: #fff;
-    text-align: center;
-    font-size: clamp(9px, 2.7vw, 13px);
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: 0;
+      0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 0 12px rgba(230, 29, 43, 0.25);
   }
 
   .control-bar {

@@ -1,47 +1,120 @@
 const HOME_SLIDE = 2;
-const TOTAL_SLIDES = 36;
+const TOTAL_SLIDES = 52;
+const HIDDEN_CONTENT_SLIDES = new Set([5, 7, 12, 15, 20, 27, 32, 46, 49, 51]);
 
 const slides = Array.from({ length: TOTAL_SLIDES }, (_, index) => ({
   number: index + 1,
   image: `assets/slides/slide-${String(index + 1).padStart(2, "0")}.png`,
 }));
 
-const sectionRanges = [
-  { start: 1, end: 2 },
-  { start: 3, end: 4 },
-  { start: 5, end: 5 },
-  { start: 6, end: 7 },
-  { start: 8, end: 11 },
-  { start: 12, end: 17 },
-  { start: 18, end: 21 },
-  { start: 22, end: 34 },
-  { start: 35, end: 36 },
+const sectionSequences = [
+  [1, HOME_SLIDE],
+  [3, 4],
+  [6],
+  [8, 9, 10, 11],
+  [13, 14],
+  [16, 17, 18, 19],
+  [21, 22, 23, 24, 25, 26],
+  [28, 29, 30, 31],
+  [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45],
+  [47, 48],
+  [50, 52],
 ];
 
-const contentsJumpButtons = [
-  {
-    label:
-      "2018 PROGRAMINA G\u00d6RE YAZILAN TAR\u0130H K\u0130TABINDAN \u00d6RNEKLER",
-    shortLabel: "2018 TAR\u0130H K\u0130TABI \u00d6RNEKLER\u0130",
-    target: 18,
-  },
-  {
-    label:
-      "TYMM 2024 PROGRAMINA G\u00d6RE YAZILAN TAR\u0130H K\u0130TABINDAN \u00d6RNEKLER",
-    shortLabel: "TYMM 2024 TAR\u0130H K\u0130TABI \u00d6RNEKLER\u0130",
-    target: 22,
-  },
-];
-
-const commonHomeZone = {
+const homeZone = {
   kind: "home",
-  label: "İçindekilere dön",
+  label: "Ana sayfaya dön",
   target: HOME_SLIDE,
-  x: 1.25,
-  y: 92.5,
-  w: 3.25,
-  h: 5.75,
+  x: 0.82,
+  y: 91.92,
+  w: 4.55,
+  h: 6.92,
 };
+
+const contentsHotspots = [
+  {
+    label: "Tarih Dersinde Değişen Yöntemler",
+    target: 3,
+    x: 14.26,
+    y: 28.63,
+    w: 34.78,
+    h: 12.55,
+  },
+  {
+    label: "Türkiye Yüzyılı Maarif Modeli Tarih Dersi Öğretim Programının Özgün Yanı",
+    target: 6,
+    x: 14.26,
+    y: 44.18,
+    w: 34.78,
+    h: 10.98,
+  },
+  {
+    label: "Tarih Alan Becerileri",
+    target: 8,
+    x: 14.26,
+    y: 58.17,
+    w: 34.78,
+    h: 10.98,
+  },
+  {
+    label: "Kavram Değişiklikleri",
+    target: 13,
+    x: 14.26,
+    y: 72.27,
+    w: 34.78,
+    h: 10.98,
+  },
+  {
+    kind: "integrated-button",
+    label: "2018 Tarih Kitabı Örnekleri",
+    target: 28,
+    x: 14.26,
+    y: 86.78,
+    w: 34.78,
+    h: 10.87,
+  },
+  {
+    label: "Ders Kitaplarında Ne Değişti?",
+    target: 16,
+    x: 50.96,
+    y: 28.63,
+    w: 34.78,
+    h: 12.81,
+  },
+  {
+    label: "İçerik Olarak Ne Değişti?",
+    target: 21,
+    x: 50.96,
+    y: 44.3,
+    w: 34.78,
+    h: 10.87,
+  },
+  {
+    label: "Tarih Ders Kitaplarında Süreklilik",
+    target: 47,
+    x: 52.04,
+    y: 58.02,
+    w: 33.69,
+    h: 11.13,
+  },
+  {
+    label: "2026-2027 Eğitim Öğretim Yılında Tarih Alanındaki Değişiklikler",
+    target: 50,
+    x: 50.96,
+    y: 72.27,
+    w: 34.78,
+    h: 10.98,
+  },
+  {
+    kind: "integrated-button",
+    label: "TYMM 2024 Tarih Kitabı Örnekleri",
+    target: 33,
+    x: 51.33,
+    y: 86.78,
+    w: 36.62,
+    h: 10.35,
+  },
+];
 
 const hotspotsBySlide = {
   1: [
@@ -54,119 +127,61 @@ const hotspotsBySlide = {
       h: 100,
     },
   ],
-  2: [
+  [HOME_SLIDE]: contentsHotspots.map((hotspot) => ({
+    kind: hotspot.kind || "toc",
+    ...hotspot,
+  })),
+  33: [
     {
-      label: "Türkiye Yüzyılı Maarif Modeli'nde tarih anlatımı değişiyor mu?",
-      target: 3,
-      x: 6.2,
-      y: 31.2,
-      w: 38.7,
-      h: 16.3,
-    },
-    {
-      label: "Tarih Dersi Öğretim Programının en güçlü ve özgün yanı",
-      target: 5,
-      x: 6.2,
-      y: 49.2,
-      w: 38.7,
-      h: 16.2,
-    },
-    {
-      label: "Tarih dersinde yapılan kavram değişiklikleri",
-      target: 6,
-      x: 6.2,
-      y: 67.1,
-      w: 38.7,
-      h: 16.6,
-    },
-    {
-      label: "Tarih ders kitaplarında ne değişti?",
-      target: 8,
-      x: 52.7,
-      y: 31.3,
-      w: 41.5,
-      h: 10.1,
-    },
-    {
-      label: "İçerik açısından ne değişti?",
-      target: 8,
-      x: 52.1,
-      y: 43.2,
-      w: 20.7,
-      h: 28.4,
-    },
-    {
-      label: "Teknik açıdan ne değişti?",
-      target: 12,
-      x: 74.6,
-      y: 43.2,
-      w: 19.8,
-      h: 28.4,
-    },
-    {
-      label: "2018 programına göre yazılan tarih kitaplarından örnekler",
-      target: 18,
-      x: 4.2,
-      y: 84.7,
-      w: 45.8,
-      h: 7.9,
-    },
-    {
-      label: "2026-2027 eğitim öğretim yılında uygulanacak değişiklikler",
-      target: 35,
-      x: 52.5,
-      y: 77.0,
-      w: 36.8,
-      h: 12.4,
-    },
-  ],
-  22: [
-    {
+      kind: "topic",
       label: "Düşünelim",
-      target: 25,
-      x: 25.0,
-      y: 45.0,
-      w: 8.9,
-      h: 8.1,
+      target: 36,
+      x: 7.54,
+      y: 42.63,
+      w: 15.21,
+      h: 24.19,
     },
     {
+      kind: "topic",
       label: "Keşfedelim",
-      target: 23,
-      x: 36.2,
-      y: 45.0,
-      w: 8.9,
-      h: 8.1,
+      target: 34,
+      x: 24.01,
+      y: 42.63,
+      w: 14.43,
+      h: 24.19,
     },
     {
+      kind: "topic",
       label: "Öğrenelim",
-      target: 26,
-      x: 47.5,
-      y: 45.0,
-      w: 8.9,
-      h: 8.1,
+      target: 37,
+      x: 39.99,
+      y: 41.45,
+      w: 18.51,
+      h: 25.38,
     },
     {
+      kind: "topic",
       label: "Uygulayalım",
-      target: 27,
-      x: 58.8,
-      y: 45.0,
-      w: 8.9,
-      h: 8.1,
+      target: 38,
+      x: 60.05,
+      y: 42.63,
+      w: 14.62,
+      h: 24.19,
     },
     {
+      kind: "topic",
       label: "Değerlendirelim",
-      target: 28,
-      x: 70.0,
-      y: 45.0,
-      w: 10.0,
-      h: 8.1,
+      target: 39,
+      x: 77.01,
+      y: 42.63,
+      w: 15.43,
+      h: 24.19,
     },
   ],
 };
 
 const slideImage = document.querySelector("#slideImage");
 const hotspotsRoot = document.querySelector("#hotspots");
-const tocButtonsRoot = document.querySelector("#tocButtons");
 const stage = document.querySelector("#stage");
 const prevBtn = document.querySelector("#prevBtn");
 const nextBtn = document.querySelector("#nextBtn");
@@ -181,41 +196,53 @@ const flipPage = document.querySelector("#flipPage");
 let currentSlide = getInitialSlide();
 let pointerStart = null;
 let isFlipping = false;
-let hasAnimatedContentsButtons = false;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function getInitialSlide() {
   const match = window.location.hash.match(/slide-(\d+)/);
   if (!match) return 1;
 
-  return clamp(Number(match[1]), 1, TOTAL_SLIDES);
+  return normalizeSlide(Number(match[1]));
+}
+
+function getSlideHash(slideNumber) {
+  return `#slide-${String(slideNumber).padStart(2, "0")}`;
+}
+
+function normalizeSlide(slideNumber) {
+  const normalized = clamp(slideNumber, 1, TOTAL_SLIDES);
+  return HIDDEN_CONTENT_SLIDES.has(normalized) ? HOME_SLIDE : normalized;
 }
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getSectionRange(slideNumber) {
-  return sectionRanges.find(
-    (section) => slideNumber >= section.start && slideNumber <= section.end
-  );
+function getSectionSequence(slideNumber) {
+  return sectionSequences.find((sequence) => sequence.includes(slideNumber));
+}
+
+function getStepTarget(slideNumber, direction) {
+  const sequence = getSectionSequence(slideNumber);
+  if (!sequence) return null;
+
+  const index = sequence.indexOf(slideNumber);
+  const nextSlide = sequence[index + direction];
+  return nextSlide || null;
 }
 
 function canStepFrom(slideNumber, direction) {
-  const section = getSectionRange(slideNumber);
-  if (!section) return false;
-
-  const nextSlide = slideNumber + direction;
-  return nextSlide >= section.start && nextSlide <= section.end;
+  return getStepTarget(slideNumber, direction) !== null;
 }
 
 function stepSlide(direction) {
-  if (!canStepFrom(currentSlide, direction)) return;
-  goToSlide(currentSlide + direction);
+  const target = getStepTarget(currentSlide, direction);
+  if (!target) return;
+  goToSlide(target);
 }
 
 function goToSlide(slideNumber, options = {}) {
-  const nextSlide = clamp(slideNumber, 1, TOTAL_SLIDES);
+  const nextSlide = normalizeSlide(slideNumber);
   if (isFlipping || (nextSlide === currentSlide && slideImage.src)) return;
 
   const previousSlide = currentSlide;
@@ -249,11 +276,11 @@ function render(options = {}) {
   slideCounter.textContent = `${slide.number} / ${TOTAL_SLIDES}`;
   prevBtn.disabled = !canStepFrom(slide.number, -1);
   nextBtn.disabled = !canStepFrom(slide.number, 1);
-  history.replaceState(null, "", `#slide-${String(slide.number).padStart(2, "0")}`);
+  homeBtn.disabled = slide.number === HOME_SLIDE;
+  history.replaceState(null, "", getSlideHash(slide.number));
   renderHotspots(slide.number);
-  renderContentsJumpButtons(slide.number);
-  preload(slide.number + 1);
-  preload(slide.number - 1);
+  preload(getStepTarget(slide.number, 1));
+  preload(getStepTarget(slide.number, -1));
 }
 
 function flipToSlide(previousSlide, nextSlide) {
@@ -284,14 +311,14 @@ function renderHotspots(slideNumber) {
   hotspotsRoot.replaceChildren();
 
   const slideHotspots = [...(hotspotsBySlide[slideNumber] || [])];
-  if (slideNumber >= 2 && slideNumber <= 35) {
-    slideHotspots.push(commonHomeZone);
+  if (slideNumber !== 1 && slideNumber !== HOME_SLIDE) {
+    slideHotspots.push(homeZone);
   }
 
   for (const hotspot of slideHotspots) {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `hotspot ${hotspot.kind === "home" ? "home-zone" : ""}`;
+    button.className = getHotspotClassName(hotspot);
     button.setAttribute("aria-label", hotspot.label);
     button.title = hotspot.label;
     button.style.left = `${hotspot.x}%`;
@@ -300,42 +327,23 @@ function renderHotspots(slideNumber) {
     button.style.height = `${hotspot.h}%`;
     button.addEventListener("click", (event) => {
       event.stopPropagation();
-      goToSlide(hotspot.target);
+      goToSlide(hotspot.target, { flip: false });
     });
     hotspotsRoot.append(button);
   }
 }
 
-function renderContentsJumpButtons(slideNumber) {
-  tocButtonsRoot.replaceChildren();
-  tocButtonsRoot.className = "toc-buttons";
-
-  if (slideNumber !== HOME_SLIDE) return;
-
-  const shouldAnimate = !hasAnimatedContentsButtons && !prefersReducedMotion.matches;
-  tocButtonsRoot.classList.add("is-visible");
-  if (shouldAnimate) tocButtonsRoot.classList.add("is-animated");
-
-  contentsJumpButtons.forEach((jumpButton, index) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "toc-jump-button";
-    button.textContent = jumpButton.label;
-    button.dataset.shortLabel = jumpButton.shortLabel;
-    button.title = jumpButton.label;
-    button.style.setProperty("--toc-delay", `${180 + index * 140}ms`);
-    button.addEventListener("click", (event) => {
-      event.stopPropagation();
-      goToSlide(jumpButton.target, { flip: false });
-    });
-    tocButtonsRoot.append(button);
-  });
-
-  hasAnimatedContentsButtons = true;
+function getHotspotClassName(hotspot) {
+  const classes = ["hotspot"];
+  if (hotspot.kind === "home") classes.push("home-zone");
+  if (hotspot.kind === "toc") classes.push("toc-zone");
+  if (hotspot.kind === "topic") classes.push("topic-zone");
+  if (hotspot.kind === "integrated-button") classes.push("integrated-button");
+  return classes.join(" ");
 }
 
 function preload(slideNumber) {
-  if (slideNumber < 1 || slideNumber > TOTAL_SLIDES) return;
+  if (!slideNumber || slideNumber < 1 || slideNumber > TOTAL_SLIDES) return;
 
   const image = new Image();
   image.src = slides[slideNumber - 1].image;
@@ -351,7 +359,7 @@ function toggleFullscreen() {
 
 prevBtn.addEventListener("click", () => stepSlide(-1));
 nextBtn.addEventListener("click", () => stepSlide(1));
-homeBtn.addEventListener("click", () => goToSlide(HOME_SLIDE));
+homeBtn.addEventListener("click", () => goToSlide(HOME_SLIDE, { flip: false }));
 fullscreenBtn.addEventListener("click", toggleFullscreen);
 
 window.addEventListener("keydown", (event) => {
@@ -365,7 +373,7 @@ window.addEventListener("keydown", (event) => {
   }
   if (event.key === "Home") {
     event.preventDefault();
-    goToSlide(HOME_SLIDE);
+    goToSlide(HOME_SLIDE, { flip: false });
   }
   if (event.key.toLowerCase() === "f") {
     event.preventDefault();
@@ -374,7 +382,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 stage.addEventListener("pointerdown", (event) => {
-  if (event.target.closest(".hotspot, .toc-jump-button")) return;
+  if (event.target.closest(".hotspot")) return;
 
   pointerStart = {
     x: event.clientX,
@@ -385,7 +393,7 @@ stage.addEventListener("pointerdown", (event) => {
 });
 
 stage.addEventListener("pointerup", (event) => {
-  if (!pointerStart || event.target.closest(".hotspot, .toc-jump-button")) {
+  if (!pointerStart || event.target.closest(".hotspot")) {
     pointerStart = null;
     return;
   }
@@ -415,7 +423,14 @@ stage.addEventListener("pointercancel", () => {
 
 window.addEventListener("hashchange", () => {
   const nextSlide = getInitialSlide();
-  if (nextSlide !== currentSlide) goToSlide(nextSlide);
+  if (nextSlide !== currentSlide) {
+    goToSlide(nextSlide, { flip: false });
+    return;
+  }
+
+  if (window.location.hash !== getSlideHash(currentSlide)) {
+    history.replaceState(null, "", getSlideHash(currentSlide));
+  }
 });
 
 render();
